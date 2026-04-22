@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: argocd-server-tls
+  namespace: argocd
+spec:
+  secretName: argocd-server-tls
+  commonName: argocd.lab.definit.co.uk
+  dnsNames:
+  - argocd.lab.definit.co.uk
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  privateKey:
+    algorithm: RSA
+    size: 2048
+  duration: 2160h # 90d
+  renewBefore: 720h # 30d

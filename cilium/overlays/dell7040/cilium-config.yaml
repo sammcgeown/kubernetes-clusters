@@ -1,0 +1,74 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumBGPClusterConfig
+metadata:
+  name: cilium-unifi
+  namespace: kube-system
+spec:
+  nodeSelector:
+    matchLabels:
+      node-role.kubernetes.io/control-plane: ""
+  bgpInstances:
+    - name: "65200"
+      localASN: 65200
+      peers:
+        - name: "ucg-65100"
+          peerASN: 65100
+          peerAddress: 192.168.1.1
+          peerConfigRef:
+            name: unifi-config
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumBGPPeerConfig
+metadata:
+  name: unifi-config
+  namespace: kube-system
+spec:
+  authSecretRef: bgp-peer-password
+  gracefulRestart:
+    enabled: true
+  families:
+    - afi: ipv4
+      safi: unicast
+      advertisements:
+        matchLabels:
+          advertise: loadbalancer-services
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: bgp-peer-password
+  namespace: kube-system
+stringData:
+  password: "supercilious"
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumBGPAdvertisement
+metadata:
+  name: loadbalancer-services
+  labels:
+    advertise: loadbalancer-services
+spec:
+  advertisements:
+    - advertisementType: Service
+      service:
+        addresses:
+          - LoadBalancerIP
+      selector:
+        matchExpressions:
+          - key: somekey
+            operator: NotIn
+            values: ["never-used-value"]
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: lab
+  namespace: kube-system
+spec:
+  blocks:
+    - cidr: 192.168.5.128/25

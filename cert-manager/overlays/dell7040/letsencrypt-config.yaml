@@ -1,0 +1,43 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-production
+spec:
+  acme:
+    email: sam@mcgeown.co.uk
+    privateKeySecretRef:
+      name: letsencrypt-production
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+      - dns01:
+          cloudflare:
+            email: sam@mcgeown.co.uk
+            apiTokenSecretRef:
+              name: cloudflare-api-token-secret
+              key: api-token
+      - http01:
+          ingress:
+            class: traefik
+
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    email: sam@mcgeown.co.uk
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    solvers:
+      - dns01:
+          cloudflare:
+            email: sam@mcgeown.co.uk
+            apiTokenSecretRef:
+              name: cloudflare-api-token-secret
+              key: api-token
+      - http01:
+          ingress:
+            class: traefik

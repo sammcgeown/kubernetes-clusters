@@ -4,3 +4,4 @@ namespace: infrastructure
 resources:
   - ../../base
   - letsencrypt-config.yaml
+  - cloudflare-api-token-sealedsecret.yaml

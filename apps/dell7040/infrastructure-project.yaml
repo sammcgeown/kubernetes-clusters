@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: infrastructure
+  namespace: argocd
+spec:
+  description: Infrastructure components (controllers, CRDs, and shared config)
+  sourceRepos:
+    - https://github.com/sammcgeown/kubernetes-clusters.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: infrastructure
+    - server: https://kubernetes.default.svc
+      namespace: kube-system
+    - server: https://kubernetes.default.svc
+      namespace: argocd
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRole
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
+    - group: admissionregistration.k8s.io
+      kind: MutatingWebhookConfiguration
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+    - group: cert-manager.io
+      kind: ClusterIssuer
+    - group: gateway.networking.k8s.io
+      kind: GatewayClass
+    - group: storage.k8s.io
+      kind: CSIDriver
+    - group: storage.k8s.io
+      kind: StorageClass

@@ -1,0 +1,13 @@
+src-*
+.DS_Store
+values-dump.yaml
+*.key
+*-secret.yaml
+*-license.yaml
+*-license.json
+tests/
+pub-sealed-secrets.pem
+infrastructure/configs/unifi-bgp-config.conf
+applications/spellingclash
+.vscode
+applications/vault/deployment.md

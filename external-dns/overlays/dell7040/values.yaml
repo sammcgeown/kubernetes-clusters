@@ -1,1 +1,24 @@
+sources:
+  - gateway-httproute
+  - ingress
+registry: txt
+txtOwnerId: "flux-system"
 txtPrefix: "dell7040-"
+domainFilters:
+  - "definit.co.uk"
+env:
+  - name: CF_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: external-dns-secret
+        key: CF_API_KEY
+        optional: false
+  - name: CF_API_EMAIL
+    valueFrom:
+      secretKeyRef:
+        name: external-dns-secret
+        key: CF_API_EMAIL
+        optional: false
+provider: cloudflare
+extraArgs:
+  - "--annotation-filter=external-dns.alpha.kubernetes.io/exclude notin (true)"

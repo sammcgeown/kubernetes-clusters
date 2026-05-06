@@ -4,15 +4,6 @@ metadata:
   name: vault
   namespace: argocd
 spec:
-  ignoreDifferences:
-    - group: helm.toolkit.fluxcd.io
-      kind: HelmRelease
-      jsonPointers:
-        - /metadata/finalizers
-    - group: source.toolkit.fluxcd.io
-      kind: HelmRepository
-      jsonPointers:
-        - /metadata/finalizers
   project: default
   source:
     repoURL: https://github.com/sammcgeown/kubernetes-clusters.git

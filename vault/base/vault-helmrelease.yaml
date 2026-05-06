@@ -14,7 +14,7 @@ spec:
         kind: HelmRepository
         name: hashicorp
         namespace: flux-system
-      version: 0.32.0
+      version: '*'
   values:
     global:
       enabled: true

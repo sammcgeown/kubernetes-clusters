@@ -1,0 +1,3 @@
+- op: replace
+  path: /spec/versions/1/served
+  value: true

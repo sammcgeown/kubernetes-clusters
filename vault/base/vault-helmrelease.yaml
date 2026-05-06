@@ -73,6 +73,7 @@ spec:
             storage "raft" {
               path = "/vault/data"
 
+              # Automatic joining with CA validation (no manual raft join required)
               retry_join {
                 leader_api_addr       = "http://vault-0.vault-internal.vault.svc:8200"
               }

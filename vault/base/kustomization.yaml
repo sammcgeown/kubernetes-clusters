@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - helmrepository.yaml
+  - selfsigned-bootstrap-clusterissuer.yaml
+  - vault-internal-root-ca-certificate.yaml
+  - vault-internal-ca-clusterissuer.yaml
+  - vault-internal-tls-certificate.yaml
+  - vault-gateway.yaml
+  - vault-httproute.yaml
+  - vault-helmrelease.yaml

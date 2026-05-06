@@ -1,0 +1,101 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vault
+  namespace: vault
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: vault
+      interval: 5m
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: hashicorp
+        namespace: flux-system
+      version: 0.32.0
+  values:
+    global:
+      enabled: true
+      tlsDisable: true
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 250m
+        limits:
+          memory: 256Mi
+          cpu: 250m
+    injector:
+      enabled: true
+      agentImage:
+        repository: hashicorp/vault
+        tag: latest
+    server:
+      ui:
+        enabled: true
+      resources:
+        requests:
+          memory: 4Gi
+          cpu: 400m
+        limits:
+          memory: 8Gi
+          cpu: 800m
+      readinessProbe:
+        enabled: true
+        path: /v1/sys/health?standbyok=true&sealedcode=204&uninitcode=204
+      livenessProbe:
+        enabled: true
+        path: /v1/sys/health?standbyok=true
+        initialDelaySeconds: 60
+      ha:
+        enabled: true
+        replicas: 3
+        clusterAddr: http://$(HOSTNAME).vault-internal:8201
+        raft:
+          enabled: true
+          setNodeId: true
+          config: |
+            ui = true
+
+            # Public address clients use
+            api_addr = "https://vault.lab.definit.co.uk"
+            # Pod address used for cluster traffic
+            cluster_addr = "http://$(HOSTNAME).vault-internal.vault.svc:8201"
+
+            listener "tcp" {
+              address         = "[::]:8200"
+              cluster_address = "[::]:8201"
+
+              tls_disable     = 1
+            }
+
+            storage "raft" {
+              path = "/vault/data"
+
+              retry_join {
+                leader_api_addr       = "http://vault-0.vault-internal.vault.svc:8200"
+              }
+              retry_join {
+                leader_api_addr       = "http://vault-1.vault-internal.vault.svc:8200"
+              }
+              retry_join {
+                leader_api_addr       = "http://vault-2.vault-internal.vault.svc:8200"
+              }
+            }
+
+            service_registration "kubernetes" {}
+      dataStorage:
+        enabled: true
+        storageClass: longhorn
+        size: 5Gi
+        mountPath: /vault/data
+        accessMode: ReadWriteOnce
+      auditStorage:
+        enabled: true
+        storageClass: longhorn
+        size: 2Gi
+        mountPath: /vault/audit
+        accessMode: ReadWriteOnce
+      ingress:
+        enabled: false

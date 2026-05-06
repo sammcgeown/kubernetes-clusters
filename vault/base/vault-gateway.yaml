@@ -1,0 +1,28 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: vault-gateway
+  namespace: vault
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    external-dns.alpha.kubernetes.io/hostname: vault.lab.definit.co.uk
+spec:
+  gatewayClassName: cilium
+  infrastructure:
+    labels:
+      lb.cilium.io/pool: lab
+  listeners:
+    - name: https
+      hostname: vault.lab.definit.co.uk
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: vault-public-tls
+            namespace: vault
+      allowedRoutes:
+        namespaces:
+          from: Same

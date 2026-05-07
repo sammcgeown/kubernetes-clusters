@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - ../../base
   - vault-token-sealedsecret.yaml
+  - tfe-token-sealedsecret.yaml

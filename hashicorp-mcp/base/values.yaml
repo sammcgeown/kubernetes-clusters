@@ -1,0 +1,56 @@
+# Disable standard Ingress; use Gateway API HTTPRoute instead
+ingress:
+  enabled: false
+
+httproute:
+  enabled: true
+  hostnames:
+    - mcp.lab.definit.co.uk
+  parentRefs:
+    - name: hashicorp-mcp-gateway   # matches gateway.name below
+      namespace: mcp-servers
+  gateway:
+    create: true                     # chart will deploy a Gateway resource
+    name: hashicorp-mcp-gateway
+    gatewayClassName: cilium         # replace with your Gateway API implementation
+    listeners:
+      - name: https
+        protocol: HTTPS
+        port: 443
+        tls:
+          mode: Terminate
+          certificateRefs:
+            - name: hashicorp-mcp-tls
+
+# cert-manager Certificate resource
+certificate:
+  enabled: true
+  name: hashicorp-mcp-tls
+  commonName: mcp.lab.definit.co.uk
+  issuer:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+
+# Vault MCP Server
+vault-mcp:
+  enabled: true
+  replicaCount: 2
+  vaultSecret:
+    create: false
+    name: vault-token-secret        # secret created in step 2
+  env:
+    VAULT_ADDR: "https://vault.lab.definit.co.uk"
+    TRANSPORT_MODE: "streamable-http"
+    MCP_ENDPOINT: "/mcp"
+
+# Terraform MCP Server
+terraform-mcp:
+  enabled: true
+  replicaCount: 2
+  tfeSecret:
+    create: false
+    name: tfe-token-secret          # secret created in step 2
+  env:
+    TFE_ADDRESS: "https://app.terraform.io"
+    TRANSPORT_MODE: "streamable-http"
+    MCP_ENDPOINT: "/mcp"

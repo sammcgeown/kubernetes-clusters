@@ -35,6 +35,8 @@ certificate:
 vault-mcp:
   enabled: true
   replicaCount: 2
+  image:
+    tag: "0.2.0"
   vaultSecret:
     create: false
     name: vault-token-secret        # secret created in step 2
@@ -47,6 +49,8 @@ vault-mcp:
 terraform-mcp:
   enabled: true
   replicaCount: 2
+  image:
+    tag: "0.5.2"
   tfeSecret:
     create: false
     name: tfe-token-secret          # secret created in step 2

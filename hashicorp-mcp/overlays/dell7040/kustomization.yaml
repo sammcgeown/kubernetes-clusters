@@ -4,3 +4,12 @@ resources:
   - ../../base
   - vault-token-sealedsecret.yaml
   - tfe-token-sealedsecret.yaml
+patches:
+  - path: terraform-mcp-securitycontext-patch.yaml
+    target:
+      kind: Deployment
+      name: hashicorp-mcp-terraform-mcp
+  - path: vault-mcp-securitycontext-patch.yaml
+    target:
+      kind: Deployment
+      name: hashicorp-mcp-vault-mcp-deployment

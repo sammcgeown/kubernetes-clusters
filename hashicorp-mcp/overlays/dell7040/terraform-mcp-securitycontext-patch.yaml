@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hashicorp-mcp-terraform-mcp
+  namespace: mcp-servers
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsNonRoot: false

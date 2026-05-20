@@ -11,3 +11,11 @@ helmCharts:
     repo: https://helm.releases.hashicorp.com
     valuesFile: values.yaml
     namespace: vault
+  - name: vault-secrets-operator
+    version: 1.4.0
+    releaseName: vault-secrets-operator
+    repo: https://helm.releases.hashicorp.com
+    namespace: vault
+    valuesInline:
+      csi:
+        enabled: true

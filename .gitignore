@@ -10,3 +10,7 @@ applications/spellingclash
 .vscode
 applications/vault/deployment.md
 cilium/overlays/dell7040/unifi-bgp-config.conf
+terraform.tfstate
+vault/terraform/.terraform.lock.hcl
+vault/terraform/terraform.tfstate.backup
+.bob

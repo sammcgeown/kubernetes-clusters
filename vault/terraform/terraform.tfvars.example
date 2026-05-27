@@ -1,0 +1,42 @@
+# Terraform variables for Vault namespace access configuration
+# Copy this file to terraform.tfvars and customize for your environment
+
+vault_address            = "https://vault.example.com"
+kubernetes_auth_backend  = "kubernetes"
+
+# Define namespace configurations
+# Each namespace gets its own policy and Kubernetes auth role
+namespaces = {
+  example-app = {
+    policy_name = "cluster-name-example-app-credentials"
+    policy_hcl = <<EOT
+# Allow example-app to read credentials from its dedicated path
+path "secret/data/clusters/cluster-name/example-app/credentials/*" {
+  capabilities = ["read", "list"]
+}
+
+# Allow listing the credentials directory
+path "secret/metadata/clusters/cluster-name/example-app/credentials/*" {
+  capabilities = ["list"]
+}
+EOT
+    role_name        = "example-app-cluster-name"
+    service_accounts = ["default"]
+    namespaces       = ["example-app"]
+    token_ttl        = 3600 # 1 hour in seconds
+  }
+
+  # Add more namespaces as needed
+  # another-app = {
+  #   policy_name = "cluster-name-another-app-credentials"
+  #   policy_hcl = <<EOT
+  # path "secret/data/clusters/cluster-name/another-app/credentials/*" {
+  #   capabilities = ["read", "list"]
+  # }
+  # EOT
+  #   role_name        = "another-app-cluster-name"
+  #   service_accounts = ["default", "app-service-account"]
+  #   namespaces       = ["another-app"]
+  #   token_ttl        = 86400 # 24 hours
+  # }
+}

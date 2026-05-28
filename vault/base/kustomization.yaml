@@ -7,15 +7,3 @@ helmCharts:
     repo: https://helm.releases.hashicorp.com
     valuesFile: values.yaml
     namespace: vault
-  - name: vault-secrets-operator
-    version: 1.4.0
-    releaseName: vault-secrets-operator
-    repo: https://helm.releases.hashicorp.com
-    namespace: vault-secrets-operator
-    valuesInline:
-      csi:
-        enabled: true
-      defaultVaultConnection:
-        enabled: true
-        address: "http://vault.vault.svc.cluster.local:8200"
-        skipTLSVerify: false

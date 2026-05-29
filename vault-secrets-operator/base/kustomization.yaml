@@ -24,5 +24,6 @@ helmCharts:
               transitMount: transit-mount
               kubernetes:
                 role: auth-role-operator
+                namespace: vault-secrets-operator
                 serviceAccount: vault-secrets-operator-controller-manager
                 tokenAudiences: ["vault"]

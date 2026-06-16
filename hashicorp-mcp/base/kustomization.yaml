@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: mcp-servers
 helmCharts:
   - name: hashicorp-mcp
-    version: 0.2.0
+    version: 0.2.2
     releaseName: hashicorp-mcp
     repo: https://sammcgeown.github.io/hashicorp-mcp-servers-helm/
     valuesFile: values.yaml

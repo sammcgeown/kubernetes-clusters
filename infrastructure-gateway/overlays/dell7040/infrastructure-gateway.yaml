@@ -25,6 +25,19 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
+    - hostname: "monitoring.lab.definit.co.uk"
+      name: monitoring-https
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: monitoring-server-tls
+            kind: Secret
+            group: ""
+      allowedRoutes:
+        namespaces:
+          from: All
     - hostname: "management.lab.definit.co.uk"
       name: lab-http
       port: 80
@@ -45,3 +58,4 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
+

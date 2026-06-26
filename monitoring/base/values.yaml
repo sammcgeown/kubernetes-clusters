@@ -13,7 +13,7 @@ grafana:
     storageClassName: longhorn
     accessModes:
       - ReadWriteOnce
-    size: 10Gi
+    size: 1Gi
 
 alertmanager:
   ingress:
@@ -41,7 +41,7 @@ alertmanager:
             - ReadWriteOnce
           resources:
             requests:
-              storage: 10Gi
+              storage: 1Gi
 
 prometheus:
   ingress:
@@ -69,4 +69,4 @@ prometheus:
             - ReadWriteOnce
           resources:
             requests:
-              storage: 50Gi
+              storage: 3Gi

@@ -1,0 +1,72 @@
+fullnameOverride: monitoring
+cleanPrometheusOperatorObjectNames: true
+
+grafana:
+  defaultDashboardsTimezone: Europe/London
+  grafana.ini:
+    server:
+      domain: monitoring.lab.definit.co.uk
+      root_url: https://monitoring.lab.definit.co.uk/
+  persistence:
+    enabled: true
+    type: sts
+    storageClassName: longhorn
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+
+alertmanager:
+  ingress:
+    enabled: false
+  route:
+    main:
+      enabled: true
+      hostnames:
+        - monitoring.lab.definit.co.uk
+      parentRefs:
+        - name: infrastructure-gateway
+          namespace: infrastructure
+      matches:
+        - path:
+            type: PathPrefix
+            value: /alertmanager
+  alertmanagerSpec:
+    externalUrl: https://monitoring.lab.definit.co.uk/alertmanager
+    routePrefix: /alertmanager
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+
+prometheus:
+  ingress:
+    enabled: false
+  route:
+    main:
+      enabled: true
+      hostnames:
+        - monitoring.lab.definit.co.uk
+      parentRefs:
+        - name: infrastructure-gateway
+          namespace: infrastructure
+      matches:
+        - path:
+            type: PathPrefix
+            value: /prometheus
+  prometheusSpec:
+    externalUrl: https://monitoring.lab.definit.co.uk/prometheus
+    routePrefix: /prometheus
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 50Gi

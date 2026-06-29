@@ -70,3 +70,67 @@ ArgoCD is not yet running on a new cluster. To bootstrap:
 1. Create the application manifests under a new directory (e.g. `my-app/overlays/<cluster>/`).
 2. Add an ArgoCD `Application` manifest to `apps/<cluster>/my-app.yaml` pointing at that path.
 3. Commit and push — ArgoCD will pick it up automatically.
+
+## Vault Secret Structure Plan
+
+This repository now treats Vault as the source of truth for runtime secrets, with Kubernetes secrets used only where an application or chart strictly requires them.
+
+### Goal
+
+- Keep secret layout predictable across apps and clusters.
+- Make Vault policies easy to scope to least privilege.
+- Avoid storing plaintext secrets in Git; only sealed/encrypted Kubernetes objects belong in this repo.
+
+### Planned KVv2 Layout
+
+Use the `kv` mount and organise secrets by cluster, application, and purpose:
+
+```text
+kv/
+   clusters/
+      dell7040/
+         <app>/
+            config
+            credentials
+            api-keys
+      rpi4/
+         <app>/
+            config
+            credentials
+```
+
+Examples:
+
+- `kv/clusters/dell7040/hashicorp-mcp/credentials`
+- `kv/clusters/dell7040/authentik/credentials`
+- `kv/clusters/dell7040/external-dns/api-keys`
+
+### Policy Pattern
+
+Each workload policy should map to the smallest possible path prefix.
+
+Example policy scope for one app on one cluster:
+
+```hcl
+path "kv/data/clusters/dell7040/hashicorp-mcp/*" {
+   capabilities = ["read", "list"]
+}
+```
+
+This keeps cross-app and cross-cluster access separated by default.
+
+### How This Fits The Current Repo
+
+- `vault/` deploys Vault and the injector/operator components.
+- `apps/<cluster>/vault-app.yaml` installs Vault per cluster through ArgoCD.
+- App overlays remain responsible for non-secret config and secret references.
+- Where Kubernetes `Secret` objects are still required by a chart, store them as SealedSecrets and source the actual values from Vault during secret creation/rotation workflows.
+
+### Rollout Approach
+
+1. Keep existing working secret references in place.
+2. Move app values into the planned Vault paths (`kv/clusters/<cluster>/<app>/...`).
+3. Tighten policies so each service account can only read its own path.
+4. Standardise rotation runbooks around the same path convention.
+
+The immediate result is that everything can stay working as-is while new secrets and rotations follow one consistent Vault structure.

@@ -3,7 +3,6 @@ cleanPrometheusOperatorObjectNames: true
 
 grafana:
   admin:
-    ## Name of the secret. Can be templated.
     existingSecret: "grafana-secrets"
     userKey: grafana-admin-user
     passwordKey: grafana-admin-password

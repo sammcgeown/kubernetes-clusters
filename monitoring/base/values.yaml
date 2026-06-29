@@ -2,6 +2,11 @@ fullnameOverride: monitoring
 cleanPrometheusOperatorObjectNames: true
 
 grafana:
+  admin:
+    ## Name of the secret. Can be templated.
+    existingSecret: "grafana-secrets"
+    userKey: grafana-admin-user
+    passwordKey: grafana-admin-password
   defaultDashboardsTimezone: Europe/London
   grafana.ini:
     server:

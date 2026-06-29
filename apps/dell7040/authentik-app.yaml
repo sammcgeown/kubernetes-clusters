@@ -1,0 +1,21 @@
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: authentik
+#   namespace: argocd
+# spec:
+#   project: default
+#   source:
+#     repoURL: https://github.com/sammcgeown/kubernetes-clusters.git
+#     targetRevision: main
+#     path: authentik/overlays/dell7040
+#   destination:
+#     server: https://kubernetes.default.svc
+#     namespace: authentik
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#       - ServerSideApply=true
+#       - CreateNamespace=true

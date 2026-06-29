@@ -1,0 +1,52 @@
+# ---
+
+# apiVersion: secrets.hashicorp.com/v1beta1
+# kind: VaultConnection
+# metadata:
+#   name: vault-connection
+#   namespace: authentik
+# spec:
+#   address: https://vault.lab.definit.co.uk
+#   skipTLSVerify: false
+
+---
+
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: authentik-namespace-auth
+  namespace: authentik
+spec:
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: authentik-dell7040
+    serviceAccount: default
+
+---
+
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: authentik-app-creds
+  namespace: authentik
+spec:
+  type: kv-v2
+  mount: kv
+  path: clusters/dell7040/authentik/credentials
+  
+  # Reference the VaultAuth
+  vaultAuthRef: authentik/authentik-namespace-auth
+  
+  # Destination Kubernetes secret
+  destination:
+    name: authentik-secrets
+    create: true
+  
+  # Refresh interval
+  refreshAfter: 30s
+  
+  # Rollout restart for deployments using this secret
+  # rolloutRestartTargets:
+  #   - kind: Deployment
+  #     name: myapp-deployment

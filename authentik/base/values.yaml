@@ -1,0 +1,20 @@
+authentik:
+    existingSecret:
+        secretName: authentik-secrets
+    # This sends anonymous usage-data, stack traces on errors and
+    # performance data to sentry.io, and is fully opt-in
+    error_reporting:
+        enabled: true
+
+server:
+    route:
+        main:
+            enabled: true
+            hostnames:
+                - auth.lab.definit.co.uk
+            parentRefs:
+                - name: infrastructure-gateway
+                  namespace: infrastructure
+
+postgresql:
+    enabled: false

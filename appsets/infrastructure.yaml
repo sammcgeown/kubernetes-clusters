@@ -23,6 +23,9 @@ spec:
                 - app: nfs-csi
                   namespace: kube-system
                   wave: "-2"
+                - app: sealed-secrets
+                  namespace: infrastructure
+                  wave: "-2"
   template:
     metadata:
       name: "{{cluster}}-{{app}}"

@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: infrastructure
+  namespace: argocd
+spec:
+  generators:
+    - matrix:
+        generators:
+          - list:
+              elements:
+                - cluster: dell7040
+                  server: https://kubernetes.default.svc
+                  project: dell7040
+                - cluster: rpi4
+                  server: https://192.168.1.204:6443
+                  project: rpi4
+          - list:
+              elements:
+                - app: cert-manager
+                  namespace: infrastructure
+                  wave: "-2"
+                - app: nfs-csi
+                  namespace: kube-system
+                  wave: "-2"
+  template:
+    metadata:
+      name: "{{cluster}}-{{app}}"
+      annotations:
+        argocd.argoproj.io/sync-wave: "{{wave}}"
+    spec:
+      project: "{{project}}"
+      source:
+        repoURL: https://github.com/sammcgeown/kubernetes-clusters.git
+        targetRevision: main
+        path: "{{app}}/overlays/{{cluster}}"
+      destination:
+        server: "{{server}}"
+        namespace: "{{namespace}}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - ServerSideApply=true
+          - CreateNamespace=true

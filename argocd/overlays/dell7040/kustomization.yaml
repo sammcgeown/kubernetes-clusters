@@ -5,4 +5,5 @@ resources:
   - ../../base
   - argocd-server-tls.yaml
   - argocd-ingress.yaml
+  # Keep only the sealed cluster secret in Git-tracked manifests.
   - rpi4-cluster-sealedsecret.yaml

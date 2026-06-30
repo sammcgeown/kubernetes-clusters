@@ -29,6 +29,9 @@ spec:
                 - app: cilium
                   namespace: kube-system
                   wave: "-2"
+                - app: gateway-api
+                  namespace: default
+                  wave: "-3"
   template:
     metadata:
       name: "{{cluster}}-{{app}}"

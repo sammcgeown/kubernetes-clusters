@@ -5,3 +5,4 @@ resources:
   - ../../base
   - argocd-server-tls.yaml
   - argocd-ingress.yaml
+  - rpi4-cluster-secret.yaml

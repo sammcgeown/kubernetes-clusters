@@ -26,9 +26,14 @@ spec:
                 - app: sealed-secrets
                   namespace: infrastructure
                   wave: "-2"
+                - app: cilium
+                  namespace: kube-system
+                  wave: "-2"
   template:
     metadata:
       name: "{{cluster}}-{{app}}"
+      labels:
+        appset: infrastructure
       annotations:
         argocd.argoproj.io/sync-wave: "{{wave}}"
     spec:

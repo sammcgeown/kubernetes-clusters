@@ -8,5 +8,3 @@ helmCharts:
     repo: https://helm.cilium.io/
     valuesFile: values.yaml
     namespace: kube-system
-resources:
-  - cilium-config.yaml

@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: rpi4
+  namespace: argocd
+spec:
+  description: Workloads deployed to the rpi4 cluster
+  sourceRepos:
+    - https://github.com/sammcgeown/kubernetes-clusters.git
+  destinations:
+    - server: https://192.168.1.204:6443
+      namespace: "*"
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"

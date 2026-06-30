@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dell7040
+  namespace: argocd
+spec:
+  description: Workloads deployed to the dell7040 cluster
+  sourceRepos:
+    - https://github.com/sammcgeown/kubernetes-clusters.git
+    - https://argoproj.github.io/argo-helm
+    - https://charts.longhorn.io
+    - https://prometheus-community.github.io/helm-charts
+    - https://grafana-community.github.io/helm-charts
+    - https://helm.releases.hashicorp.com
+    - https://charts.jetstack.io
+    - https://cilium.github.io/helm-charts
+    - https://kubernetes-sigs.github.io/external-dns
+    - https://bitnami-labs.github.io/sealed-secrets
+    - https://grafana.github.io/helm-charts
+    - https://raw.githubusercontent.com/csi-driver/nfs-csi-driver/master/charts
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: "*"
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"

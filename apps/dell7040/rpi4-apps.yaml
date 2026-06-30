@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: rpi4-apps
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   project: default
   source:
@@ -10,8 +12,8 @@ spec:
     targetRevision: main
     path: apps/rpi4
   destination:
-    server: https://192.168.1.204:6443
-    namespace: default
+    server: https://kubernetes.default.svc
+    namespace: argocd
   syncPolicy:
     automated:
       prune: true

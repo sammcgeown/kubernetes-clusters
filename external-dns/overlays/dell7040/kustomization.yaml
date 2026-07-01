@@ -10,3 +10,5 @@ helmCharts:
     namespace: infrastructure
 resources:
   - external-dns-vaultstaticsecret.yaml
+  - vaultauth.yaml
+  - external-dns-vaultstaticsecret.yaml

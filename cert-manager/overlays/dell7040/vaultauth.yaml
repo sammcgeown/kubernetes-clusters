@@ -5,14 +5,12 @@ metadata:
   name: cert-manager-vault-auth
   namespace: infrastructure
 spec:
-  vaultConnectionRef: vault-secrets-operator/default
-
-  method: kubernetes
-  mount: kubernetes
-
   # Kubernetes auth configuration
   kubernetes:
     role: dell7040-cert-manager
     serviceAccount: cert-manager
     audiences:
      - "vault"
+  vaultConnectionRef: vault-secrets-operator/default
+  method: kubernetes
+  mount: kubernetes

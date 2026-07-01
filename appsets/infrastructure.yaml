@@ -37,6 +37,7 @@ spec:
       name: "{{cluster}}-{{app}}"
       labels:
         appset: infrastructure
+        cluster: "{{cluster}}"
       annotations:
         argocd.argoproj.io/sync-wave: "{{wave}}"
     spec:

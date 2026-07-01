@@ -7,6 +7,8 @@ helmCharts:
     repo: https://helm.releases.hashicorp.com
     namespace: vault-secrets-operator
     valuesInline:
+      # csi:
+      #   enabled: true
       defaultVaultConnection:
         enabled: true
         address: "http://vault.vault.svc.cluster.local:8200"
@@ -20,6 +22,7 @@ helmCharts:
               mount: kubernetes
               keyName: vso-client-cache
               transitMount: transit-mount
+              namespace: vault-secrets-operator
               kubernetes:
                 role: auth-role-operator
                 serviceAccount: vault-secrets-operator-controller-manager

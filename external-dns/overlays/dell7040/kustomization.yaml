@@ -9,4 +9,4 @@ helmCharts:
     valuesFile: values.yaml
     namespace: infrastructure
 resources:
-  - external-dns-sealedsecret.yaml
+  - external-dns-vaultstaticsecret.yaml

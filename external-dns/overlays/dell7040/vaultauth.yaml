@@ -1,0 +1,16 @@
+# vault-auth.yaml
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: external-dns-vault-auth
+  namespace: infrastructure
+spec:
+  # Kubernetes auth configuration
+  kubernetes:
+    role: dell7040-external-dns
+    serviceAccount: external-dns
+    audiences:
+     - "vault"
+  vaultConnectionRef: vault-secrets-operator/default
+  method: kubernetes
+  mount: kubernetes

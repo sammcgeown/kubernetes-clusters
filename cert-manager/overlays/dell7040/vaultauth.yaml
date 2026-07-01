@@ -1,0 +1,18 @@
+# vault-auth.yaml
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: cert-manager-vault-auth
+  namespace: infrastructure
+spec:
+  vaultConnectionRef: vault-secrets-operator/default
+
+  method: kubernetes
+  mount: kubernetes
+
+  # Kubernetes auth configuration
+  kubernetes:
+    role: dell7040-cert-manager
+    serviceAccount: cert-manager
+    audiences:
+     - "vault"

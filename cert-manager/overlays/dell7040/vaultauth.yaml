@@ -5,7 +5,6 @@ metadata:
   name: cert-manager-vault-auth
   namespace: infrastructure
 spec:
-  # Kubernetes auth configuration
   kubernetes:
     role: dell7040-cert-manager
     serviceAccount: cert-manager

@@ -21,7 +21,7 @@ helmCharts:
               enabled: true
               mount: kubernetes
               keyName: vso-client-cache
-              transitMount: transit-mount
+              transitMount: transit
               namespace: vault-secrets-operator
               kubernetes:
                 role: auth-role-operator

@@ -65,12 +65,13 @@ prometheus:
   prometheusSpec:
     externalUrl: https://monitoring.lab.definit.co.uk/prometheus
     routePrefix: /prometheus
+    retention: 10d
+    retentionSize: 8GB
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: longhorn
-          accessModes:
-            - ReadWriteOnce
+          storageClassName: nfs-truenas-ssd
+          accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 3Gi
+              storage: 10Gi

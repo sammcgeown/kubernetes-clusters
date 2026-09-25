@@ -4,6 +4,12 @@ metadata:
   name: infrastructure
   namespace: argocd
 spec:
+  # rpi4 cluster is offline. preserveResourcesOnDeletion stops the controller
+  # from trying to prune resources on the (unreachable) rpi4 cluster when its
+  # generated Applications are removed below. Config kept in Git for later
+  # redeployment - re-add the rpi4 list entry when the cluster is back.
+  syncPolicy:
+    preserveResourcesOnDeletion: true
   generators:
     - matrix:
         generators:
@@ -12,9 +18,9 @@ spec:
                 - cluster: dell7040
                   server: https://kubernetes.default.svc
                   project: dell7040
-                - cluster: rpi4
-                  server: https://192.168.1.204:6443
-                  project: rpi4
+                # - cluster: rpi4
+                #   server: https://192.168.1.204:6443
+                #   project: rpi4
           - list:
               elements:
                 - app: cert-manager

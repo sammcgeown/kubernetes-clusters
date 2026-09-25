@@ -5,5 +5,8 @@ resources:
   - ../../base
   - argocd-server-tls.yaml
   - argocd-ingress.yaml
-  # Keep only the sealed cluster secret in Git-tracked manifests.
-  - rpi4-cluster-sealedsecret.yaml
+  # rpi4 cluster is offline - cluster secret disabled so Argo CD stops
+  # retrying connections to it. Kept in Git for later redeployment; re-add
+  # this resource (and the rpi4 generator entry in appsets/infrastructure.yaml)
+  # when the cluster is back.
+  # - rpi4-cluster-sealedsecret.yaml

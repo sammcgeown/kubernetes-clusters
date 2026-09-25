@@ -13,3 +13,21 @@ mountOptions:
   - hard
   - noatime
   - nconnect=4
+
+---
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-truenas-hdd
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: truenas.lab.definit.co.uk
+  share: /mnt/rust/kubernetes-hdd
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions:
+  - nfsvers=4.2
+  - hard
+  - noatime
+  - nconnect=4

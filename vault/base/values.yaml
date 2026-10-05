@@ -28,7 +28,8 @@ server:
     path: /v1/sys/health?standbyok=true&sealedcode=204&uninitcode=204
   livenessProbe:
     enabled: true
-    path: /v1/sys/health?standbyok=true&sealedcode=204&uninitcode=204
+    # haunhealthycode: don't kill standbys that temporarily can't reach the active node (default 474)
+    path: /v1/sys/health?standbyok=true&sealedcode=204&uninitcode=204&haunhealthycode=204
     initialDelaySeconds: 120
   ha:
     enabled: true

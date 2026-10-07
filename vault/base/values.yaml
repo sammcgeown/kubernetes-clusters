@@ -42,7 +42,7 @@ server:
         ui = true
 
         seal "transit" {
-          disabled = true
+          disabled = "true"
           address = "https://truenas.lab.definit.co.uk:30504"
           tls_skip_verify = true
           mount_path = "transit"

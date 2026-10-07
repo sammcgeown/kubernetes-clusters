@@ -41,6 +41,14 @@ server:
       config: |
         ui = true
 
+        seal "transit" {
+          disabled = true
+          address = "https://truenas.lab.definit.co.uk:30504"
+          tls_skip_verify = true
+          mount_path = "transit"
+          key_name = "dell7040-autounseal"
+        }
+
         # Public address clients use
         api_addr = "https://vault.lab.definit.co.uk"
         # Pod address used for cluster traffic

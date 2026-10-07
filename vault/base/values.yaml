@@ -91,3 +91,7 @@ server:
     accessMode: ReadWriteOnce
   ingress:
     enabled: false
+  extraSecretEnvironmentVars:
+  - envName: VAULT_TOKEN
+    secretName: vault-unseal-token
+    secretKey: VAULT_TOKEN

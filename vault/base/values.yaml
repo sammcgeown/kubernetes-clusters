@@ -44,7 +44,7 @@ server:
         # Public address clients use
         api_addr = "https://vault.lab.definit.co.uk"
         # Pod address used for cluster traffic
-        cluster_addr = "http://$(HOSTNAME).vault-internal.vault.svc:8201"
+        cluster_addr = "http://HOSTNAME.vault-internal.vault.svc:8201"
 
         listener "tcp" {
           address         = "[::]:8200"

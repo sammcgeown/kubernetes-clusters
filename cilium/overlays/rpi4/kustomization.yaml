@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: kube-system
 helmCharts:
   - name: cilium
-    version: 1.19.3
+    version: 1.19.10
     releaseName: cilium
     repo: https://helm.cilium.io/
     valuesFile: values.yaml

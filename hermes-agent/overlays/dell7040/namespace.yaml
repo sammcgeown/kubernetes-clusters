@@ -3,5 +3,9 @@ kind: Namespace
 metadata:
   name: hermes-agent
   labels:
-    pod-security.kubernetes.io/enforce: restricted
+    # baseline only for the fix-data-owner init container (runs as root with
+    # CHOWN); see hermes-agent/base/values.yaml. warn/audit flag anything else.
+    pod-security.kubernetes.io/enforce: baseline
     pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/audit: restricted

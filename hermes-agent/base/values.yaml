@@ -86,6 +86,35 @@ extraVolumeMounts:
     mountPath: /run
   - name: tmp-tmpfs
     mountPath: /tmp
+
+# Hermes refuses its gateway control socket ("unsafe_control_path") unless
+# /opt/data is owned by uid 10000, but a new Longhorn volume's root is 0:10000
+# (fsGroup sets only the group). Fix the mount point's owner once, not
+# recursively. Runs as root with only CHOWN, so the namespace enforces Pod
+# Security baseline (warn/audit stay restricted). Runs after the chart's
+# seed-config, which only needs group write.
+extraInitContainers:
+  - name: fix-data-owner
+    image: busybox:1.37
+    command:
+      - sh
+      - -c
+      - '[ "$(stat -c %u /opt/data)" = 10000 ] || chown 10000:10000 /opt/data'
+    securityContext:
+      runAsUser: 0
+      runAsGroup: 0
+      runAsNonRoot: false
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: [ALL]
+        add: [CHOWN]
+      seccompProfile:
+        type: RuntimeDefault
+    volumeMounts:
+      - name: data
+        mountPath: /opt/data
+
 team:
   sharedVolume:
     permissions:

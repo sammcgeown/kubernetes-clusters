@@ -14,3 +14,6 @@ terraform.tfstate
 vault/terraform/.terraform.lock.hcl
 vault/terraform/terraform.tfstate.backup
 .bob
+# Helm charts downloaded by `kustomize build --enable-helm`
+*/overlays/*/charts/
+*/base/charts/

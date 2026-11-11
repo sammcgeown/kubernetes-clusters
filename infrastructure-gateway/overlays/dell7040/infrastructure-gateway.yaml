@@ -45,17 +45,4 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
-    - hostname: "auth.lab.definit.co.uk"
-      name: auth-https
-      port: 443
-      protocol: HTTPS
-      tls:
-        mode: Terminate
-        certificateRefs:
-          - name: auth-server-tls
-            kind: Secret
-            group: ""
-      allowedRoutes:
-        namespaces:
-          from: All
 

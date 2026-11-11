@@ -102,7 +102,6 @@ kv/
 Examples:
 
 - `kv/clusters/dell7040/hashicorp-mcp/credentials`
-- `kv/clusters/dell7040/authentik/credentials`
 - `kv/clusters/dell7040/external-dns/api-keys`
 
 ### Policy Pattern

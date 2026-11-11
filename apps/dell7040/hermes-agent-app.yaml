@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hermes-agent
+  namespace: argocd
+spec:
+  project: dell7040
+  source:
+    repoURL: https://github.com/sammcgeown/kubernetes-clusters.git
+    targetRevision: main
+    path: hermes-agent/overlays/dell7040
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: hermes-agent
+  ignoreDifferences:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      jqPathExpressions:
+        - .spec.rules[].backendRefs[].group
+        - .spec.rules[].backendRefs[].kind
+        - .spec.rules[].backendRefs[].weight
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true

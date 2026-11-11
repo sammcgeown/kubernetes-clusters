@@ -1,0 +1,115 @@
+# Hermes Agent (https://github.com/NousResearch/hermes-agent)
+# Chart: oci://ghcr.io/jyje/hermes-agent-helm/hermes-agent 1.24.0 (Hermes v0.23.0)
+# Design: Obsidian "Lab/Hermes Agent on dell7040-cluster". Combines the chart's
+# values-ingress-oidc.yaml and values-hardened.yaml, with an HTTPRoute instead
+# of an Ingress. No secrets in this file.
+
+config:
+  model:
+    provider: openrouter
+    # OpenRouter model id (vendor/model): https://openrouter.ai/models
+    default: anthropic/claude-sonnet-5.5
+  terminal:
+    backend: local
+  dashboard:
+    oauth:
+      provider: self-hosted
+      self_hosted:
+        # Vault OIDC provider "hermes"; public PKCE client, so no secret.
+        issuer: "https://vault.lab.definit.co.uk/v1/identity/oidc/provider/hermes"
+        # Not a secret. From: vault read -field=client_id identity/oidc/client/hermes-dashboard
+        client_id: "UJRPq1uzu9EwLXStMsCEvg0q9pPcVzfT"
+        scopes: "openid profile email"
+
+# --- Dashboard ------------------------------------------------------------------
+# A signed-in user effectively has a shell in the pod. Access is gated by the
+# Vault OIDC client's assignment (hermes-users), not by Hermes.
+dashboard:
+  enabled: true
+  publicUrl: "https://hermes.lab.definit.co.uk"
+  # Cilium's Envoy reaches backends from each node's ingress IP
+  # (kubectl get ciliumnodes -o custom-columns=NAME:.metadata.name,IP:.spec.ingress.ipv4).
+  # Written to config.yaml on first seed only: changing these later needs one
+  # sync with bootstrap.overwrite=true.
+  trustedProxies:
+    - "10.0.2.243"  # dell7040-1
+    - "10.0.0.7"    # dell7040-2
+    - "10.0.1.20"   # dell7040-3
+  auth:
+    provider: oidc
+
+# --- Secrets --------------------------------------------------------------------
+# The chart always renders its own `hermes-agent-env` Secret from `env`; null out
+# its OPENAI_API_KEY placeholder so it stays empty. OPENROUTER_API_KEY comes from
+# Vault (kv/clusters/dell7040/hermes-agent/llm) via the VaultStaticSecret in the
+# overlay.
+env:
+  OPENAI_API_KEY: null
+
+extraEnvFrom:
+  - secretRef:
+      name: hermes-agent-llm
+
+# --- Storage --------------------------------------------------------------------
+# HERMES_HOME holds SQLite (WAL) databases: RWO block storage, not NFS.
+persistence:
+  enabled: true
+  storageClass: longhorn
+  size: 5Gi
+
+# --- Pod Security `restricted` (from values-hardened.yaml) --------------------
+# Copied rather than stacked: Helm replaces extraVolumes/extraVolumeMounts lists
+# wholesale. s6-overlay needs /run writable and executable; tools need /tmp.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10000
+  runAsGroup: 10000
+  fsGroup: 10000
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: [ALL]
+extraVolumes:
+  - name: run-tmpfs
+    emptyDir:
+      medium: Memory
+      sizeLimit: 16Mi
+  - name: tmp-tmpfs
+    emptyDir:
+      medium: Memory
+      sizeLimit: 64Mi
+extraVolumeMounts:
+  - name: run-tmpfs
+    mountPath: /run
+  - name: tmp-tmpfs
+    mountPath: /tmp
+team:
+  sharedVolume:
+    permissions:
+      # The ownership init container needs root, which `restricted` forbids.
+      enabled: false
+
+# --- Routing --------------------------------------------------------------------
+# TLS terminates at hermes-gateway (overlay); plain HTTP to 9119 in-cluster.
+service:
+  enabled: true  # legacy single port: 9119, the dashboard
+
+httpRoute:
+  enabled: true
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: hermes-gateway
+      sectionName: https
+  hostnames:
+    - hermes.lab.definit.co.uk
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - port: 9119

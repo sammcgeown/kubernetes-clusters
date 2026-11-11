@@ -1,0 +1,15 @@
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: hermes-agent
+  namespace: hermes-agent
+spec:
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: dell7040-hermes-agent
+    # The chart's own ServiceAccount (not `default`).
+    serviceAccount: hermes-agent
+    audiences:
+      - "vault"
+  vaultConnectionRef: vault-secrets-operator/default

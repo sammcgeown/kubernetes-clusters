@@ -2,13 +2,3 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.3/standard-install.yaml
-patches:
-  # Cilium <= 1.19 watches TLSRoute at v1alpha2, which the standard channel
-  # ships as served: false. Cilium 1.20+ uses TLSRoute v1 only, so this patch
-  # can be removed once Cilium 1.20 is rolled out on this cluster.
-  - target:
-      group: apiextensions.k8s.io
-      version: v1
-      kind: CustomResourceDefinition
-      name: tlsroutes.gateway.networking.k8s.io
-    path: tlsroute-v1alpha2-served-patch.yaml

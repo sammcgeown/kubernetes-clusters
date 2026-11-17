@@ -1,3 +1,24 @@
+global:
+  domain: argocd.lab.definit.co.uk   # chart sets argocd-cm url to https://<domain>
+
 configs:
   params:
     kustomize.buildOptions: "--enable-helm"
+  cm:
+    dex.config: |
+      connectors:
+        - type: oidc
+          id: authentik
+          name: Authentik
+          config:
+            issuer: https://truenas.lab.definit.co.uk:30141/application/o/argocd/
+            clientID: $argocd-authentik:clientID
+            clientSecret: $argocd-authentik:clientSecret
+            insecureEnableGroups: true
+            scopes:
+              - openid
+              - profile
+              - email
+  rbac:
+    policy.csv: |
+      g, argocd-admins, role:admin

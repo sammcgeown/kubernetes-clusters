@@ -5,6 +5,7 @@ resources:
   - ../../base
   - argocd-server-tls.yaml
   - argocd-ingress.yaml
+  - argocd-vault-secrets.yaml
   # rpi4 cluster is offline - cluster secret disabled so Argo CD stops
   # retrying connections to it. Kept in Git for later redeployment; re-add
   # this resource (and the rpi4 generator entry in appsets/infrastructure.yaml)

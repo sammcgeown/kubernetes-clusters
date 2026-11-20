@@ -45,6 +45,9 @@ server:
       config: |
         ui = true
 
+        # Enable the plugin directory so we can load the GitHub secrets plugin
+        plugin_directory = "/usr/local/libexec/vault"
+
         # Transit auto-unseal configuration
         seal "transit" {
           address = "https://truenas.lab.definit.co.uk:30504"

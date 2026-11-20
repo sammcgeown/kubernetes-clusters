@@ -95,3 +95,35 @@ server:
     accessMode: ReadWriteOnce
   ingress:
     enabled: false
+  volumes:
+    - name: plugins
+      emptyDir: {}
+  volumeMounts:
+    - name: plugins
+      mountPath: /usr/local/libexec/vault
+      readOnly: false
+  extraInitContainers:
+    - name: fetch-github-plugin
+      image: curlimages/curl:8.11.0
+      securityContext:
+        runAsUser: 100          # match the vault user so the files are owned correctly
+        runAsGroup: 100
+        allowPrivilegeEscalation: false
+      command: [sh, -c]
+      args:
+        - |
+          set -euo pipefail
+          ver=v2.4.0
+          asset=vault-plugin-secrets-github-linux-amd64
+          digest=cd7b9ac7f765aeeddad2ad0483b37f8cc05eb37188fa23949987f3f7c02f83b2
+          base=https://github.com/martinbaillie/vault-plugin-secrets-github/releases/download/${ver}
+
+          curl -fsSL --proto '=https' --tlsv1.2 --retry 3 --retry-all-errors \
+            -o /plugins/${asset} "${base}/${asset}"
+          echo "${digest}  /plugins/${asset}" | sha256sum -c -
+          cp /plugins/${asset} /plugins/vault-plugin-secrets-github
+          chmod 0755 /plugins/vault-plugin-secrets-github
+          rm -f /plugins/${asset}
+      volumeMounts:
+        - name: plugins
+          mountPath: /plugins
